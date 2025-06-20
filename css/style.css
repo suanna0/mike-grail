@@ -152,9 +152,16 @@ h4 {
 }
 
 @media (max-width: 768px) {
+  h1 {
+    font-size: 48px;
+  }
   .header {
     display: grid;
     grid-template-columns: 2fr 1fr;
+  }
+
+  h2 {
+    font-size: 30px;
   }
 
   .content {
