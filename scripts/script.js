@@ -13,10 +13,10 @@ document.addEventListener("DOMContentLoaded", () => {
         // Clear existing content
         infoText.innerHTML = "";
 
-        // Create and append h2 for asset name (first part)
-        const h2 = document.createElement("h2");
-        h2.textContent = parts[0];
-        infoText.appendChild(h2);
+        // Create and append h3 for asset name (first part)
+        const h3 = document.createElement("h3");
+        h3.textContent = parts[0];
+        infoText.appendChild(h3);
 
         // Create and append p for each remaining part
         for (let i = 1; i < parts.length; i++) {
@@ -28,11 +28,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       el.addEventListener("mouseleave", () => {
         // Reset to default text or whatever structure you want
-        infoText.innerHTML = "<h2>NAME</h2><p>desc</p>";
+        infoText.innerHTML = "<h3>NAME</h3><p>desc</p>";
       });
     });
   }
-
 
   const hoverImages = document.querySelectorAll(".gallery img");
   const hoverVideos = document.querySelectorAll("video");
@@ -134,19 +133,47 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // "Go to Top" button logic
   const goToTopBtn = document.getElementById("goToTop");
-
-  window.addEventListener("scroll", () => {
-    if (window.scrollY > 300) {
-      goToTopBtn.style.display = "inline";
-    } else {
-      goToTopBtn.style.display = "none";
-    }
-  });
-
   goToTopBtn.addEventListener("click", () => {
     window.scrollTo({
       top: 0,
       behavior: "smooth"
     });
+  });
+});
+
+// Animate landing_desc on scroll with GSAP
+gsap.registerPlugin(ScrollTrigger);
+
+// GSAP entrance animation
+gsap.from(".landing-wrapper h1", {
+  opacity: 0,
+  y: -100,
+  duration: 1,
+  ease: "power3.out"
+});
+
+gsap.utils.toArray("img").forEach((imgEl) => {
+  gsap.from(imgEl, {
+    scrollTrigger: {
+      trigger: imgEl,
+      start: "top 80%",
+    },
+    y: 20,
+    opacity: 0,
+    duration: 1,
+    ease: "power3.out"
+  });
+});
+
+gsap.utils.toArray("video").forEach((videoEl) => {
+  gsap.from(videoEl, {
+    scrollTrigger: {
+      trigger: videoEl,
+      start: "top 80%",
+    },
+    y: 20,
+    opacity: 0,
+    duration: 1,
+    ease: "power3.out"
   });
 });

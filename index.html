@@ -11,15 +11,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css" />
     <script src="scripts/script.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
   </head>
   <body>
     <div class="mobile-warning">
       <p>This site is not ready for mobile viewing. Please use a desktop.</p>
     </div>
+
+    <section class = "landing-wrapper">
+      <div class="landing-content">
+      <h1>Mike Grail</h1>
+      </div>
+
+    </section>
     
-    <div class="wrapper">
+    <section class="main-wrapper" id="mainSite">
       <div class = "header">
-        <h1>Mike Grail</h1>
+        <h2 id = "goToTop">Mike Grail</h2>
       </div>
       <div class="content">
         <div class = "gallery">
@@ -66,18 +75,14 @@
             src="https://de1wwae7728z6.cloudfront.net/images/paint/michael.jpg" 
             data-desc="ANOTHER ITEM–sample text–hiiiii"
           />
-
-
         </div>
         <div class = "description">
-          <p class = "asset-desc"></p>
+          <div class = "asset-desc"><h3>NAME</h3><p>desc</p></div>
         </div>
       </div>
       <div class = "footer">
-        <p></p>
-        <button id="goToTop" style="display: none;">↑ Top</button>
-        <h3>© 2024 Mike Grail</h3>
+        <h4>© 2025 Mike Grail</h4>
       </div>
-    </div>
+    </section>
   </body>
 </html>
