@@ -1,42 +1,80 @@
 document.addEventListener("DOMContentLoaded", () => {
   const infoText = document.querySelector(".asset-desc");
+  const hoverImages = document.querySelectorAll(".gallery img");
+  const hoverVideos = document.querySelectorAll("video");
+  const mediaElements = [...hoverImages, ...hoverVideos];
 
-  // DESKTOP: Hover-to-show descriptions
-  function setupHoverDescriptions(elements) {
-    elements.forEach((el) => {
+  let isMobile = window.innerWidth < 768;
+
+  function createDescElements(desc) {
+    const parts = desc.split("–").map(s => s.trim());
+    const wrapper = document.createElement("div");
+    wrapper.classList.add("mobile-desc");
+
+    const h3 = document.createElement("h3");
+    h3.textContent = parts[0];
+    wrapper.appendChild(h3);
+
+    for (let i = 1; i < parts.length; i++) {
+      const p = document.createElement("p");
+      p.textContent = parts[i];
+      wrapper.appendChild(p);
+    }
+
+    return wrapper;
+  }
+
+  function setupDescriptions() {
+    mediaElements.forEach((el) => {
       const desc = el.getAttribute("data-desc");
 
-      el.addEventListener("mouseenter", () => {
-        // Example: data-desc="Asset Name – Other info here"
-        const parts = desc.split("–").map(s => s.trim());
+      // Clear existing .mobile-desc
+      const next = el.nextElementSibling;
+      if (next && next.classList.contains("mobile-desc")) {
+        next.remove();
+      }
 
-        // Clear existing content
-        infoText.innerHTML = "";
+      if (desc) {
+        if (isMobile) {
+          const descEl = createDescElements(desc);
+          el.parentNode.insertBefore(descEl, el.nextSibling);
+        } else {
+          // Desktop hover
+          el.onmouseenter = () => {
+            const parts = desc.split("–").map(s => s.trim());
+            infoText.innerHTML = "";
 
-        // Create and append h3 for asset name (first part)
-        const h3 = document.createElement("h3");
-        h3.textContent = parts[0];
-        infoText.appendChild(h3);
+            const h3 = document.createElement("h3");
+            h3.textContent = parts[0];
+            infoText.appendChild(h3);
 
-        // Create and append p for each remaining part
-        for (let i = 1; i < parts.length; i++) {
-          const p = document.createElement("p");
-          p.textContent = parts[i];
-          infoText.appendChild(p);
+            for (let i = 1; i < parts.length; i++) {
+              const p = document.createElement("p");
+              p.textContent = parts[i];
+              infoText.appendChild(p);
+            }
+          };
+
+          el.onmouseleave = () => {
+            infoText.innerHTML = "<h3>NAME</h3><p>desc</p>";
+          };
         }
-      });
-
-      el.addEventListener("mouseleave", () => {
-        // Reset to default text or whatever structure you want
-        infoText.innerHTML = "<h3>NAME</h3><p>desc</p>";
-      });
+      }
     });
   }
 
-  const hoverImages = document.querySelectorAll(".gallery img");
-  const hoverVideos = document.querySelectorAll("video");
-  setupHoverDescriptions(hoverImages);
-  setupHoverDescriptions(hoverVideos);
+  setupDescriptions();
+
+  window.addEventListener("resize", () => {
+    const wasMobile = isMobile;
+    isMobile = window.innerWidth < 768;
+
+    if (wasMobile !== isMobile) {
+      // Re-setup only if the mode actually changed
+      setupDescriptions();
+    }
+  });
+
 
   // Image fade-in and lazy styling
   hoverImages.forEach((img, index) => {
