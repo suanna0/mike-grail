@@ -144,6 +144,15 @@ document.addEventListener("DOMContentLoaded", () => {
 // Animate landing_desc on scroll with GSAP
 gsap.registerPlugin(ScrollTrigger);
 
+gsap.delayedCall(2, () => {
+  gsap.to(window, {
+    scrollTo: "#mainSite",
+    duration: 1,
+    ease: "power3.inOut"
+  });
+});
+
+
 // GSAP entrance animation
 gsap.from("#Mike", {
   opacity: 0,
