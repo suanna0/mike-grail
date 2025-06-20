@@ -2,6 +2,8 @@
   --color-bg: #ffffff;
   --color-text-main: #212121;
   --color-text-header: #212121;
+  --color-text-grey: #7f7f7f;
+
 }
 
 * {
@@ -66,7 +68,7 @@ section {
 .header a {
   margin-top: 0; 
   text-decoration: none;
-  color: #212121;
+  color: var(--color-text-main);
 }
 
 .header a p {
@@ -85,7 +87,7 @@ h1 {
   font-weight: 400;
   font-style: normal;
   letter-spacing: -0.04em;
-
+  color: var(--color-text-header);
 }
 
 #goToTop {
@@ -148,7 +150,7 @@ p, h4 {
 }
 
 h4 {
-  color: #7f7f7f;
+  color: var(--color-text-grey);
 }
 
 @media (max-width: 768px) {
