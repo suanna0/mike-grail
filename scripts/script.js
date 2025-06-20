@@ -145,9 +145,17 @@ document.addEventListener("DOMContentLoaded", () => {
 gsap.registerPlugin(ScrollTrigger);
 
 // GSAP entrance animation
-gsap.from(".landing-wrapper h1", {
+gsap.from("#Mike", {
   opacity: 0,
   y: -100,
+  duration: 1,
+  ease: "power3.out"
+});
+
+gsap.from("#Grail", {
+  opacity: 0,
+  y: 30,
+  delay: 0.4,
   duration: 1,
   ease: "power3.out"
 });
