@@ -144,16 +144,6 @@ document.addEventListener("DOMContentLoaded", () => {
 // Animate landing_desc on scroll with GSAP
 gsap.registerPlugin(ScrollTrigger);
 
-gsap.delayedCall(2, () => {
-  gsap.to(window, {
-    scrollTo: "#mainSite",
-    duration: 1,
-    ease: "power3.inOut"
-  });
-});
-
-
-// GSAP entrance animation
 gsap.from("#Mike", {
   opacity: 0,
   y: -100,
@@ -167,6 +157,32 @@ gsap.from("#Grail", {
   delay: 0.4,
   duration: 1,
   ease: "power3.out"
+});
+
+
+gsap.delayedCall(2, () => {
+  gsap.to(window, {
+    scrollTo: "#mainSite",
+    duration: 1,
+    ease: "power3.inOut"
+  });
+});
+
+// Show arrow after 5 seconds
+gsap.to("#downArrow", {
+  opacity: 1,
+  delay: 3,
+  duration: 1,
+  ease: "power2.out"
+});
+
+// Scroll to main site on click
+document.getElementById("downArrow").addEventListener("click", () => {
+  gsap.to(window, {
+    scrollTo: "#mainSite",
+    duration: 1,
+    ease: "power2.inOut"
+  });
 });
 
 gsap.utils.toArray("img").forEach((imgEl) => {

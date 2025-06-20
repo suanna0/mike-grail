@@ -16,6 +16,20 @@ body {
   background-color: var(--color-bg);
 }
 
+.down-arrow {
+  position: absolute;
+  bottom: 5vh;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 2rem;
+  opacity: 0;
+  cursor: pointer;
+  transition: opacity 0.5s ease;
+  color: #7f7f7f; 
+  z-index: 10;
+}
+
+
 section {
   width: 100vw;
   height: 100vh;
