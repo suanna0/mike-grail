@@ -16,6 +16,7 @@
 
 body {
   background-color: var(--color-bg);
+  margin: 0px;
 }
 
 .down-arrow {
