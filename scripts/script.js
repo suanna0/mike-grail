@@ -1,4 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const toggleBtn = document.getElementById("toggleBtn");
+  const desc1 = document.getElementById("bio-j");
+  const desc2 = document.getElementById("bio-srs");
+
   const infoText = document.querySelector(".asset-desc");
   const hoverImages = document.querySelectorAll(".gallery img");
   const hoverVideos = document.querySelectorAll("video");
@@ -64,6 +68,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   setupDescriptions();
+
+  toggleBtn.addEventListener("click", () => {
+    const showingFirst = desc1.style.display !== "none";
+    desc1.style.display = showingFirst ? "none" : "block";
+    desc2.style.display = showingFirst ? "block" : "none";
+  });
 
   window.addEventListener("resize", () => {
     const wasMobile = isMobile;
@@ -162,14 +172,13 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Preconnect for CDNs
-  ["cdn.glitch.global", "cdn.glitch.me"].forEach(domain => {
+  ["cdn.glitch.global", "cdn.glitch.me"].forEach(domain => { // TO DO: change domains as needed
     const link = document.createElement("link");
     link.rel = "preconnect";
     link.href = `https://${domain}`;
     document.head.appendChild(link);
   });
 
-  // "Go to Top" button logic
   const goToTopBtn = document.getElementById("goToTop");
   goToTopBtn.addEventListener("click", () => {
     window.scrollTo({
@@ -179,7 +188,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// Animate landing_desc on scroll with GSAP
 gsap.registerPlugin(ScrollTrigger);
 
 gsap.from("#Mike", {
@@ -197,6 +205,21 @@ gsap.from("#Grail", {
   ease: "power3.out"
 });
 
+gsap.from("#Thats-Right", {
+  opacity: 0,
+  y: -100,
+  duration: 1,
+  ease: "power3.out"
+});
+
+gsap.from("#Im-Mike", {
+  opacity: 0,
+  y: 30,
+  delay: 0.8,
+  duration: 1,
+  ease: "power3.out"
+});
+
 
 gsap.delayedCall(2, () => {
   gsap.to(window, {
@@ -206,7 +229,6 @@ gsap.delayedCall(2, () => {
   });
 });
 
-// Show arrow after 5 seconds
 gsap.to("#downArrow", {
   opacity: 1,
   delay: 3,
@@ -214,7 +236,6 @@ gsap.to("#downArrow", {
   ease: "power2.out"
 });
 
-// Scroll to main site on click
 document.getElementById("downArrow").addEventListener("click", () => {
   gsap.to(window, {
     scrollTo: "#mainSite",

@@ -129,6 +129,7 @@ h2 {
 }
 
 h3 {
+  text-transform: uppercase;
   display: inline;
   font-family: 'Geist', sans-serif;
   font-weight: 700;
@@ -137,7 +138,7 @@ h3 {
   line-height: 1;
 }
 
-p, h4 {
+p, h4, #toggleBtn  {
   font-family: monospace, sans-serif;
   font-style: normal;
   font-size: 12px;
@@ -152,6 +153,15 @@ p, h4 {
 
 h4 {
   color: var(--color-text-grey);
+}
+
+#toggleBtn {
+  text-transform: uppercase;
+  margin: 0px;
+  padding: 0px;
+  background:var(--color-bg);
+  border: none;
+  cursor: pointer;
 }
 
 @media (max-width: 768px) {
