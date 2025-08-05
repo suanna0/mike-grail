@@ -110,7 +110,7 @@ h2 {
   row-gap: 10px;
 }
 
-.about {
+.about{
   display: grid;
   grid-template-columns: 1fr;
   column-gap: 10px; 

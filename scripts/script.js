@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const toggleBtn = document.getElementById("toggleBtn");
+  const img1 = document.getElementById("img-j");
+  const img2 = document.getElementById("img-srs");
   const desc1 = document.getElementById("bio-j");
   const desc2 = document.getElementById("bio-srs");
 
@@ -73,6 +75,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const showingFirst = desc1.style.display !== "none";
     desc1.style.display = showingFirst ? "none" : "block";
     desc2.style.display = showingFirst ? "block" : "none";
+
+    const showingFirstImg = img1.style.display !== "none";
+    img1.style.display = showingFirst ? "none" : "block";
+    img2.style.display = showingFirst ? "block" : "none";
   });
 
   window.addEventListener("resize", () => {
