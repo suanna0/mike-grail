@@ -156,7 +156,7 @@ h4, h4 a, #toggleBtn {
   color: var(--color-text-grey);
 }
 
-a:hover, #toggleBtn:hover {
+a:hover, #toggleBtn:hover, h2:hover {
   opacity: 0.5;
   transition: opacity 0.2s ease;
 }
