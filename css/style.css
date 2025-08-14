@@ -151,8 +151,14 @@ p, h4, #toggleBtn  {
   column-gap: 10px;
 }
 
-h4 {
+h4, h4 a, #toggleBtn {
+  text-decoration: none;
   color: var(--color-text-grey);
+}
+
+a:hover, #toggleBtn:hover {
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
 }
 
 #toggleBtn {
