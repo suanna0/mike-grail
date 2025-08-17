@@ -1,10 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const toggleBtn = document.getElementById("toggleBtn");
-  const img1 = document.getElementById("img-j");
-  const img2 = document.getElementById("img-srs");
-  const desc1 = document.getElementById("bio-j");
-  const desc2 = document.getElementById("bio-srs");
-
   const infoText = document.querySelector(".asset-desc");
   const hoverImages = document.querySelectorAll(".gallery img");
   const hoverVideos = document.querySelectorAll("video");
@@ -26,7 +20,6 @@ document.addEventListener("DOMContentLoaded", () => {
       p.textContent = parts[i];
       wrapper.appendChild(p);
     }
-
     return wrapper;
   }
 
@@ -34,7 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
     mediaElements.forEach((el) => {
       const desc = el.getAttribute("data-desc");
 
-      // Clear existing .mobile-desc
       const next = el.nextElementSibling;
       if (next && next.classList.contains("mobile-desc")) {
         next.remove();
@@ -45,7 +37,6 @@ document.addEventListener("DOMContentLoaded", () => {
           const descEl = createDescElements(desc);
           el.parentNode.insertBefore(descEl, el.nextSibling);
         } else {
-          // Desktop hover
           el.onmouseenter = () => {
             const parts = desc.split("–").map(s => s.trim());
             infoText.innerHTML = "";
@@ -71,28 +62,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   setupDescriptions();
 
-  toggleBtn.addEventListener("click", () => {
-    const showingFirst = desc1.style.display !== "none";
-    desc1.style.display = showingFirst ? "none" : "block";
-    desc2.style.display = showingFirst ? "block" : "none";
-
-    const showingFirstImg = img1.style.display !== "none";
-    img1.style.display = showingFirst ? "none" : "block";
-    img2.style.display = showingFirst ? "block" : "none";
-  });
-
   window.addEventListener("resize", () => {
     const wasMobile = isMobile;
     isMobile = window.innerWidth < 768;
-
-    if (wasMobile !== isMobile) {
-      // Re-setup only if the mode actually changed
-      setupDescriptions();
-    }
+    if (wasMobile !== isMobile) setupDescriptions();
   });
 
-
-  // Image fade-in and lazy styling
+  // --- Image fade-in + hover cycle ---
   hoverImages.forEach((img, index) => {
     img.classList.add("fade-in");
 
@@ -105,9 +81,57 @@ document.addEventListener("DOMContentLoaded", () => {
     if (index >= 4) {
       img.classList.add("loading-monitored");
     }
+
+    // Hover cycle setup
+    const altSrcs = img.getAttribute("data-alt-srcs");
+    if (!altSrcs) return;
+
+    const sources = [img.src, ...altSrcs.split(",").map(s => s.trim())];
+    let indexCycle = 0;
+    let interval;
+
+    img.addEventListener("mouseenter", () => {
+      // Immediately change to the next image
+      indexCycle = (indexCycle + 1) % sources.length;
+      gsap.to(img, {
+        opacity: 0,
+        duration: 0.8,
+        onComplete: () => {
+          img.src = sources[indexCycle];
+          gsap.to(img, { opacity: 1, duration: 0.5 });
+        }
+      });
+
+      // Start interval after the immediate swap
+      interval = setInterval(() => {
+        indexCycle = (indexCycle + 1) % sources.length;
+        gsap.to(img, {
+          opacity: 0,
+          duration: 0.8,
+          onComplete: () => {
+            img.src = sources[indexCycle];
+            gsap.to(img, { opacity: 1, duration: 0.5 });
+          }
+        });
+      }, 3000); // 3s cycle after first change
+    });
+
+    img.addEventListener("mouseleave", () => {
+      clearInterval(interval);
+      indexCycle = 0;
+      gsap.to(img, {
+        opacity: 0,
+        duration: 0.5,
+        onComplete: () => {
+          img.src = sources[0]; // reset
+          gsap.to(img, { opacity: 1, duration: 0.5 });
+        }
+      });
+    });
   });
 
-  // VIDEO: Lazy load with IntersectionObserver
+
+  // --- VIDEO: Lazy load + play/pause on view ---
   const videoContainers = document.querySelectorAll("[data-video-container]");
   const initialLoadCount = 2;
 
@@ -125,7 +149,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const playbackObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       const video = entry.target;
-
       if (video.getAttribute("src")) {
         if (entry.isIntersecting) {
           video.play().catch(e => console.log("Autoplay prevented:", e));
@@ -178,13 +201,14 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Preconnect for CDNs
-  ["cdn.glitch.global", "cdn.glitch.me"].forEach(domain => { // TO DO: change domains as needed
+  ["cdn.glitch.global", "cdn.glitch.me"].forEach(domain => {
     const link = document.createElement("link");
     link.rel = "preconnect";
     link.href = `https://${domain}`;
     document.head.appendChild(link);
   });
 
+  // --- Scroll to top ---
   const goToTopBtn = document.getElementById("goToTop");
   goToTopBtn.addEventListener("click", () => {
     window.scrollTo({
@@ -194,6 +218,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+// --- GSAP Animations ---
 gsap.registerPlugin(ScrollTrigger);
 
 gsap.from("#Mike", {
@@ -226,7 +251,7 @@ gsap.from("#Im-Mike", {
   ease: "power3.out"
 });
 
-
+// Auto scroll down after intro
 gsap.delayedCall(2, () => {
   gsap.to(window, {
     scrollTo: "#mainSite",
