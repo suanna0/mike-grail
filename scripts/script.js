@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const hoverVideos = document.querySelectorAll("video");
   const mediaElements = [...hoverImages, ...hoverVideos];
 
+
   // --- TOGGLE (swap desc + image) ---
   const toggleBtn = document.getElementById("toggleBtn");
   const img1 = document.getElementById("img-j");
@@ -41,6 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const nextShowFirst = !isShown(desc1);
       setToggle(nextShowFirst);
     });
+
   }
 
   let isMobile = window.innerWidth < 768;
@@ -243,9 +245,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // --- Scroll to top ---
-  const goToTopBtn = document.getElementById("goToTop");
-  if (goToTopBtn) {
-    goToTopBtn.addEventListener("click", () => {
+  const topBtn = document.getElementById("topBtn");
+  if (topBtn) {
+    topBtn.addEventListener("click", () => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
   }
