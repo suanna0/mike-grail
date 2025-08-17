@@ -177,7 +177,7 @@ a:hover, #toggleBtn:hover, h2:hover {
 
   .header {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 1fr 1fr;
   }
 
   h2, #Thats-Right, #Im-Mike {
@@ -189,7 +189,7 @@ a:hover, #toggleBtn:hover, h2:hover {
   }
 
   .gallery {
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 1fr;
   }
 
   h3 {
