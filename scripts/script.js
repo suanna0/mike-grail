@@ -4,8 +4,48 @@ document.addEventListener("DOMContentLoaded", () => {
   const hoverVideos = document.querySelectorAll("video");
   const mediaElements = [...hoverImages, ...hoverVideos];
 
+  // --- TOGGLE (swap desc + image) ---
+  const toggleBtn = document.getElementById("toggleBtn");
+  const img1 = document.getElementById("img-j");
+  const img2 = document.getElementById("img-srs");
+  const desc1 = document.getElementById("bio-j");
+  const desc2 = document.getElementById("bio-srs");
+
+  // helper to check visibility even if style="" is unset
+  const isShown = (el) => el && window.getComputedStyle(el).display !== "none";
+
+  // ensure both pairs exist before wiring the toggle
+  if (toggleBtn && img1 && img2 && desc1 && desc2) {
+    // initialize to current CSS state (fallback: show first)
+    function setToggle(showFirst) {
+      desc1.style.display = showFirst ? "block" : "none";
+      desc2.style.display = showFirst ? "none" : "block";
+      img1.style.display  = showFirst ? "block" : "none";
+      img2.style.display  = showFirst ? "none" : "block";
+    }
+
+    // force any active hover-cycles to reset before hiding
+    function resetHoverCycle(el) {
+      if (!el) return;
+      el.dispatchEvent(new Event("mouseleave"));
+    }
+
+    // keep current state or default to first visible
+    const startFirst = isShown(desc1) || !isShown(desc2);
+    setToggle(startFirst);
+
+    toggleBtn.addEventListener("click", () => {
+      // reset cycles on both before flipping
+      resetHoverCycle(img1);
+      resetHoverCycle(img2);
+      const nextShowFirst = !isShown(desc1);
+      setToggle(nextShowFirst);
+    });
+  }
+
   let isMobile = window.innerWidth < 768;
 
+  // --- Description handling ---
   function createDescElements(desc) {
     const parts = desc.split("–").map(s => s.trim());
     const wrapper = document.createElement("div");
@@ -68,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (wasMobile !== isMobile) setupDescriptions();
   });
 
-  // --- Image fade-in + hover cycle ---
+  // --- Image fade-in classes for gallery ---
   hoverImages.forEach((img, index) => {
     img.classList.add("fade-in");
 
@@ -81,55 +121,49 @@ document.addEventListener("DOMContentLoaded", () => {
     if (index >= 4) {
       img.classList.add("loading-monitored");
     }
+  });
 
-    // Hover cycle setup
+  // --- Hover cycle (immediate first swap, then 4000ms) ---
+  function fadeSwap(img, newSrc) {
+    gsap.to(img, {
+      opacity: 0,
+      duration: 0.8,
+      onComplete: () => {
+        img.src = newSrc;
+        gsap.to(img, { opacity: 1, duration: 0.5 });
+      }
+    });
+  }
+
+  function attachHoverCycle(img) {
     const altSrcs = img.getAttribute("data-alt-srcs");
     if (!altSrcs) return;
 
-    const sources = [img.src, ...altSrcs.split(",").map(s => s.trim())];
-    let indexCycle = 0;
+    // use current src as the base (so it respects toggled images too)
+    const sources = [img.getAttribute("src"), ...altSrcs.split(",").map(s => s.trim())];
+    let idx = 0;
     let interval;
 
     img.addEventListener("mouseenter", () => {
-      // Immediately change to the next image
-      indexCycle = (indexCycle + 1) % sources.length;
-      gsap.to(img, {
-        opacity: 0,
-        duration: 0.8,
-        onComplete: () => {
-          img.src = sources[indexCycle];
-          gsap.to(img, { opacity: 1, duration: 0.5 });
-        }
-      });
+      // immediate first change
+      idx = (idx + 1) % sources.length;
+      fadeSwap(img, sources[idx]);
 
-      // Start interval after the immediate swap
       interval = setInterval(() => {
-        indexCycle = (indexCycle + 1) % sources.length;
-        gsap.to(img, {
-          opacity: 0,
-          duration: 0.8,
-          onComplete: () => {
-            img.src = sources[indexCycle];
-            gsap.to(img, { opacity: 1, duration: 0.5 });
-          }
-        });
-      }, 3000); // 3s cycle after first change
+        idx = (idx + 1) % sources.length;
+        fadeSwap(img, sources[idx]);
+      }, 4000);
     });
 
     img.addEventListener("mouseleave", () => {
       clearInterval(interval);
-      indexCycle = 0;
-      gsap.to(img, {
-        opacity: 0,
-        duration: 0.5,
-        onComplete: () => {
-          img.src = sources[0]; // reset
-          gsap.to(img, { opacity: 1, duration: 0.5 });
-        }
-      });
+      idx = 0;
+      fadeSwap(img, sources[0]); // reset to original
     });
-  });
+  }
 
+  // attach to any image that declares alternates (gallery + toggled ones)
+  document.querySelectorAll('img[data-alt-srcs]').forEach(attachHoverCycle);
 
   // --- VIDEO: Lazy load + play/pause on view ---
   const videoContainers = document.querySelectorAll("[data-video-container]");
@@ -210,12 +244,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- Scroll to top ---
   const goToTopBtn = document.getElementById("goToTop");
-  goToTopBtn.addEventListener("click", () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
+  if (goToTopBtn) {
+    goToTopBtn.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
     });
-  });
+  }
 });
 
 // --- GSAP Animations ---
@@ -267,20 +300,20 @@ gsap.to("#downArrow", {
   ease: "power2.out"
 });
 
-document.getElementById("downArrow").addEventListener("click", () => {
-  gsap.to(window, {
-    scrollTo: "#mainSite",
-    duration: 1,
-    ease: "power2.inOut"
+const downArrowEl = document.getElementById("downArrow");
+if (downArrowEl) {
+  downArrowEl.addEventListener("click", () => {
+    gsap.to(window, {
+      scrollTo: "#mainSite",
+      duration: 1,
+      ease: "power2.inOut"
+    });
   });
-});
+}
 
 gsap.utils.toArray("img").forEach((imgEl) => {
   gsap.from(imgEl, {
-    scrollTrigger: {
-      trigger: imgEl,
-      start: "top 80%",
-    },
+    scrollTrigger: { trigger: imgEl, start: "top 80%" },
     y: 20,
     opacity: 0,
     duration: 1,
@@ -290,10 +323,7 @@ gsap.utils.toArray("img").forEach((imgEl) => {
 
 gsap.utils.toArray("video").forEach((videoEl) => {
   gsap.from(videoEl, {
-    scrollTrigger: {
-      trigger: videoEl,
-      start: "top 80%",
-    },
+    scrollTrigger: { trigger: videoEl, start: "top 80%" },
     y: 20,
     opacity: 0,
     duration: 1,
