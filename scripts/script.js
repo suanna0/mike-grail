@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
           };
 
           el.onmouseleave = () => {
-            infoText.innerHTML = "<h3>NAME</h3><p>desc</p>";
+            infoText.innerHTML = "<h3></h3><p></p>";
           };
         }
       }
