@@ -9,7 +9,6 @@
 </script>
   
 <footer>    
-    <button class="button"><a target = "_blank" href = "https://suannazhong.com">Suanna Zhong</a>, 2026</button>
     <button class="button" on:click={backToTop}>
         Back to Top ↑
     </button>
@@ -18,16 +17,15 @@
   
 <style>
     footer {
-        padding-top: 20px;
-        display: flex;
-        margin: 0 auto;
-    }
-
-    footer button:first-child {
-        margin-right: auto;
+        padding: 10px 0;
+        align-items: center;
     }
 
     footer button {
         background-color: transparent;
+        align-items: center;
+        justify-content: center;
+        display: flex;
+        margin: 0 auto;
     }
 </style>

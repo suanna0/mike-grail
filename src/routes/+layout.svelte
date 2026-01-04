@@ -10,6 +10,24 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-<Nav />
+<div class = "light-bg">
+	<Nav />
 {@render children()}
-<Footer />
+</div>
+<div class = "dark-bg">
+	<Footer />
+</div>
+
+<style>
+	.light-bg {
+		background-color: var(--color-bg);
+		padding: 0px 75px;
+		margin: 0;
+		padding-bottom: 80px;
+	}
+	.dark-bg {
+		background-color: #00ff00;
+		padding: 0px 75px;  
+		margin: 0;
+	}
+</style>

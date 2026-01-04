@@ -341,7 +341,7 @@
 
     .description-content {
         position: sticky;
-        top: 20px;
+        top: 50px;
         padding-top: 20px;
     }
 

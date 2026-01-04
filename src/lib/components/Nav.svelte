@@ -17,9 +17,9 @@
         <button
           class:active={$page.url.pathname === item.path}
           on:click={() => navigate(item.path)}
-        ><h2>
+        ><p>
           {item.label}
-        </h2>
+        </p>
         </button>
       {/each}
     </div>
@@ -37,7 +37,7 @@
       max-width: 1500px;
       display: flex;      
       background-color: var(--color-bg);
-      padding: 5px 0; 
+      padding: 10px 0; 
     }
   
     nav button:first-child {

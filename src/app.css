@@ -1,3 +1,5 @@
+@import url("https://use.typekit.net/zso5nxd.css");
+
 :root {
     --color-bg: #efefef;
     --color-text-main: #212121;
@@ -15,14 +17,12 @@
   }
   
   body {
-    background-color: var(--color-bg);
     margin: 0px;
-    padding: 0px 75px;  
   } 
   
   h1 {
     font-size: 60px;
-    font-family: "Geist", sans-serif;
+    font-family: "parabolica", sans-serif;
     font-weight: 500;
     font-style: normal;
     letter-spacing: -0.04em;
@@ -30,19 +30,19 @@
   }
   
   h2, button {
-    font-family: "Geist", sans-serif;
+    font-family: "parabolica", sans-serif;
     font-style: normal;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 700;
     color: var(--color-text-main);
   }
 
   p {
     color: var(--color-text-main);
-    font-family: "Geist", sans-serif;
+    font-family: "parabolica-text", sans-serif;
     font-style: normal;
     font-size: 12px;
-    font-weight: 300;
+    font-weight: 400;
   }
 
   button  {
