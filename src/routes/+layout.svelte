@@ -30,4 +30,10 @@
 		padding: 0px 75px;  
 		margin: 0;
 	}
+	
+	@media (max-width: 768px) {
+		.light-bg, .dark-bg {
+			padding: 0px 10px;
+		}
+	}
 </style>
