@@ -7,7 +7,7 @@
         description: string;
     }
 
-    let isMobile = false;
+    let isMobile = typeof window !== 'undefined' ? window.innerWidth <= 768 : false;
 
     let galleryItems: GalleryItem[] = [
         {
@@ -189,71 +189,87 @@
 </script>
 
 <div class="gallery-container">
-    <div class="image-columns">
-        <div class="thumbnail-column">
-            {#each galleryItems.filter((_, i) => i % 2 === 0) as item (item.id)}
-                <div 
-                    class="gallery-item"
-                    role="button"
-                    tabindex="0"
-                    on:mouseenter={() => !isMobile && handleMouseEnter(item)}
-                    on:mouseleave={() => !isMobile && handleMouseLeave(item)}
-                >
-                    <div class="image-container">
-                        {#each item.images as image, index}
-                            <img 
-                                src={image} 
-                                alt={item.description}
-                                class="gallery-image"
-                                class:active={hoveredItem?.id === item.id ? currentImageIndex[item.id] === index : index === 0}
-                            />
-                        {/each}
+    {#if isMobile}
+        <div class="image-columns mobile-single-column">
+            <div class="thumbnail-column">
+                {#each galleryItems as item (item.id)}
+                    <div 
+                        class="gallery-item"
+                        role="button"
+                        tabindex="0"
+                    >
+                        <div class="image-container">
+                            {#each item.images as image, index}
+                                <img 
+                                    src={image} 
+                                    alt={item.description}
+                                    class="gallery-image"
+                                    class:active={index === 0}
+                                />
+                            {/each}
+                        </div>
+                        <div class="mobile-description">
+                            {#each formatDescription(item.description) as part, index}
+                                {#if part.isTitle}
+                                    <h2>{part.text}</h2>
+                                {:else}
+                                    <p class="description-paragraph">{part.text}</p>
+                                {/if}
+                            {/each}
+                        </div>
                     </div>
-                    <div class="mobile-description">
-                        {#each formatDescription(item.description) as part, index}
-                            {#if part.isTitle}
-                                <h2>{part.text}</h2>
-                            {:else}
-                                <p class="description-paragraph">{part.text}</p>
-                            {/if}
-                        {/each}
-                    </div>
-                </div>
-            {/each}
+                {/each}
+            </div>
         </div>
-        
-        <div class="thumbnail-column">
-            {#each galleryItems.filter((_, i) => i % 2 === 1) as item (item.id)}
-                <div 
-                    class="gallery-item"
-                    role="button"
-                    tabindex="0"
-                    on:mouseenter={() => !isMobile && handleMouseEnter(item)}
-                    on:mouseleave={() => !isMobile && handleMouseLeave(item)}
-                >
-                    <div class="image-container">
-                        {#each item.images as image, index}
-                            <img 
-                                src={image} 
-                                alt={item.description}
-                                class="gallery-image"
-                                class:active={hoveredItem?.id === item.id ? currentImageIndex[item.id] === index : index === 0}
-                            />
-                        {/each}
+    {:else}
+        <div class="image-columns">
+            <div class="thumbnail-column">
+                {#each galleryItems.filter((_, i) => i % 2 === 0) as item (item.id)}
+                    <div 
+                        class="gallery-item"
+                        role="button"
+                        tabindex="0"
+                        on:mouseenter={() => handleMouseEnter(item)}
+                        on:mouseleave={() => handleMouseLeave(item)}
+                    >
+                        <div class="image-container">
+                            {#each item.images as image, index}
+                                <img 
+                                    src={image} 
+                                    alt={item.description}
+                                    class="gallery-image"
+                                    class:active={hoveredItem?.id === item.id ? currentImageIndex[item.id] === index : index === 0}
+                                />
+                            {/each}
+                        </div>
                     </div>
-                    <div class="mobile-description">
-                        {#each formatDescription(item.description) as part, index}
-                            {#if part.isTitle}
-                                <h2>{part.text}</h2>
-                            {:else}
-                                <p class="description-paragraph">{part.text}</p>
-                            {/if}
-                        {/each}
+                {/each}
+            </div>
+            
+            <div class="thumbnail-column">
+                {#each galleryItems.filter((_, i) => i % 2 === 1) as item (item.id)}
+                    <div 
+                        class="gallery-item"
+                        role="button"
+                        tabindex="0"
+                        on:mouseenter={() => handleMouseEnter(item)}
+                        on:mouseleave={() => handleMouseLeave(item)}
+                    >
+                        <div class="image-container">
+                            {#each item.images as image, index}
+                                <img 
+                                    src={image} 
+                                    alt={item.description}
+                                    class="gallery-image"
+                                    class:active={hoveredItem?.id === item.id ? currentImageIndex[item.id] === index : index === 0}
+                                />
+                            {/each}
+                        </div>
                     </div>
-                </div>
-            {/each}
+                {/each}
+            </div>
         </div>
-    </div>
+    {/if}
     <div class="description-column">
         <div class="description-content">
             {#if hoveredItem}
