@@ -4,7 +4,8 @@
   
     const navItems = [
       { label: 'Mike Grail', path: '/' },
-      { label: 'About', path: '/about' }
+      { label: 'About', path: '/about' },
+      { label: 'Submit', path: '/submit' }
     ];
   
     function navigate(path: string) {
@@ -38,6 +39,10 @@
       display: flex;      
       background-color: var(--color-bg);
       padding: 10px 0; 
+    }
+
+    nav button {
+      padding-left: 20px;
     }
   
     nav button:first-child {

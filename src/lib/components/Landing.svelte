@@ -5,7 +5,7 @@
 	let mikeSpan: HTMLSpanElement;
 	let grailSpan: HTMLSpanElement;
 
-	onMount(() => {
+	function startAnimation() {
 		gsap.from(mikeSpan, {
 			opacity: 0,
 			y: -50,
@@ -19,6 +19,27 @@
 			duration: 1.0,
 			ease: 'power2.out'
 		});
+	}
+
+	onMount(() => {
+		const isMobile = window.innerWidth <= 850;
+
+		if (isMobile) {
+			startAnimation();
+			return;
+		}
+
+		const handleP5Valid = () => {
+			setTimeout(() => {
+				startAnimation();
+			}, 6000);
+		};
+
+		window.addEventListener('p5Valid', handleP5Valid);
+
+		return () => {
+			window.removeEventListener('p5Valid', handleP5Valid);
+		};
 	});
 </script>
 
