@@ -11,6 +11,45 @@
 
     gsap.registerPlugin(ScrollToPlugin);
 
+    async function startCaptcha() {
+        console.log('[Captcha] Starting captcha...');
+        try {
+            const response = await fetch('/api/captcha/start', { method: 'POST' });
+            const data = await response.json();
+            console.log('[Captcha] Got challengeId:', data.challengeId);
+            if (data.challengeId && (window as any).setCaptchaChallengeId) {
+                (window as any).setCaptchaChallengeId(data.challengeId);
+                console.log('[Captcha] Challenge ID set in p5 sketch');
+            } else {
+                console.warn('[Captcha] Could not set challengeId - p5 not ready or no ID received');
+            }
+        } catch (error) {
+            console.error('[Captcha] Failed to start captcha:', error);
+        }
+    }
+
+    async function verifyCaptcha(detail: { challengeId: string; duration: number; moves: number; jitter: number; accuracy: number }) {
+        console.log('[Captcha] Verifying with metrics:', detail);
+        try {
+            const response = await fetch('/api/captcha/verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(detail)
+            });
+            const data = await response.json();
+            console.log('[Captcha] Verification response:', data);
+            if (data.ok) {
+                console.log('[Captcha] ✓ Verification successful! Pass token:', data.passToken);
+            } else {
+                console.log('[Captcha] ✗ Verification failed');
+            }
+            return data.ok;
+        } catch (error) {
+            console.error('[Captcha] Failed to verify captcha:', error);
+            return false;
+        }
+    }
+
     onMount(() => {
         const isMobile = window.innerWidth <= 850;
 
@@ -21,7 +60,7 @@
                     window.scrollTo(0, 0);
                 }
                 loadingSpan.style.visibility = 'visible';
-                gsap.from(loadingSpan.querySelector('.loading-word'), {
+                gsap.from(loadingSpan.querySelector('h3'), {
                     opacity: 0,
                     duration: 1.0,
                     ease: 'power2.out'
@@ -44,22 +83,38 @@
             return;
         }
 
-        const handleP5Valid = () => {
-            loadingAnimation();
-            setTimeout(() => {
-                loadingSpan.style.visibility = 'hidden';
-                gsap.to(window, {
-                    delay: 1.5,
-                    duration: 1.0,
-                    scrollTo: gallerySpan,
-                    ease: 'power2.inOut'
-                });
-            }, 6000);
+        // Start captcha challenge when p5 is ready
+        const checkP5Ready = setInterval(() => {
+            if ((window as any).setCaptchaChallengeId) {
+                clearInterval(checkP5Ready);
+                startCaptcha();
+            }
+        }, 100);
+
+        const handleP5Valid = async (event: Event) => {
+            const customEvent = event as CustomEvent;
+            const verified = await verifyCaptcha(customEvent.detail);
+            if (verified) {
+                loadingAnimation();
+                setTimeout(() => {
+                    loadingSpan.style.visibility = 'hidden';
+                    gsap.to(window, {
+                        delay: 1.5,
+                        duration: 1.0,
+                        scrollTo: gallerySpan,
+                        ease: 'power2.inOut'
+                    });
+                }, 6000);
+            } else {
+                // Restart captcha on failure
+                startCaptcha();
+            }
         };
 
         window.addEventListener('p5Valid', handleP5Valid);
 
         return () => {
+            clearInterval(checkP5Ready);
             window.removeEventListener('p5Valid', handleP5Valid);
         };
     });
@@ -74,7 +129,7 @@
 
 <div id="p5-container" bind:this={p5Container}></div>
 <div id="loading-span" bind:this={loadingSpan}>
-    <p><span class="loading-word">Loading</span><span class="loading-dot">.</span><span class="loading-dot">.</span><span class="loading-dot">.</span></p>
+    <h3>Loading<span class="loading-dot">.</span><span class="loading-dot">.</span><span class="loading-dot">.</span></h3>
 </div>
 <Landing />
 

@@ -198,8 +198,7 @@
                     {/each}
                 </div>
             {:else}
-                <p class="description-text placeholder">
-                    Hover on images</p>
+                <h3>Hover on images</h3>
             {/if}
         </div>
     </div>
@@ -285,11 +284,6 @@
     .description-paragraph {
         margin: 0;
         white-space: pre-line;
-    }
-
-    .description-text.placeholder {
-        color: var(--color-text-grey);
-        font-style: italic;
     }
 
     @media (max-width: 768px) {

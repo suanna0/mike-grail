@@ -10,7 +10,7 @@ var endAngle = 1080;
 const endX = -42.5;
 const epsilon = 10;
 
-let maxY; 
+let maxY;
 let xPos;
 let sliderX;
 let before_img;
@@ -21,6 +21,14 @@ let reload_img;
 
 let isValid;
 let validationStartTime;
+
+// Captcha metrics tracking
+let challengeId = null;
+let captchaStartTime = 0;
+let moveCount = 0;
+let lastMouseX = 0;
+let lastMouseY = 0;
+let movementDeltas = [];
 
 function preload() {
 	mike_captcha = loadImage(
@@ -64,7 +72,22 @@ function setup() {
 	xPos = - w/2;
 	isValid = false;
 	validationStartTime = 0;
+	captchaStartTime = millis();
+	moveCount = 0;
+	movementDeltas = [];
 }
+
+// Called from page to set challenge ID
+function setCaptchaChallengeId(id) {
+	console.log('[p5 Captcha] Received challengeId:', id);
+	challengeId = id;
+	captchaStartTime = millis();
+	moveCount = 0;
+	movementDeltas = [];
+}
+
+// Expose to window for Svelte access
+window.setCaptchaChallengeId = setCaptchaChallengeId;
 
 function draw() {
 	background(239);
@@ -104,7 +127,30 @@ function checkValid() {
 		isValid = true;
 		validationStartTime = millis();
 		loadingStartTime = validationStartTime;
-		window.dispatchEvent(new CustomEvent('p5Valid'));
+
+		// Calculate captcha metrics
+		const duration = millis() - captchaStartTime;
+		const accuracy = 1 - Math.abs(xPos - endX) / epsilon;
+
+		// Calculate jitter (variance in movement)
+		let jitter = 0;
+		if (movementDeltas.length > 1) {
+			const avgDelta = movementDeltas.reduce((a, b) => a + b, 0) / movementDeltas.length;
+			const variance = movementDeltas.reduce((sum, d) => sum + Math.pow(d - avgDelta, 2), 0) / movementDeltas.length;
+			jitter = Math.sqrt(variance);
+		}
+
+		const metrics = {
+			challengeId: challengeId,
+			duration: duration,
+			moves: moveCount,
+			jitter: jitter,
+			accuracy: accuracy
+		};
+
+		console.log('[p5 Captcha] Solved! Dispatching p5Valid event with metrics:', metrics);
+
+		window.dispatchEvent(new CustomEvent('p5Valid', { detail: metrics }));
 	}
 }
 
@@ -145,6 +191,16 @@ function drawTarget() {
 function mouseDragged() {
 	if (isValid) return;
 	sliderX = min(max(width/2 - w/2, mouseX - btnSize/2), width/2 + w/2 - btnSize);
+
+	// Track metrics
+	moveCount++;
+	if (lastMouseX !== 0 || lastMouseY !== 0) {
+		let deltaX = mouseX - lastMouseX;
+		let deltaY = mouseY - lastMouseY;
+		movementDeltas.push(Math.sqrt(deltaX * deltaX + deltaY * deltaY));
+	}
+	lastMouseX = mouseX;
+	lastMouseY = mouseY;
 }
 
 function mouseReleased () {

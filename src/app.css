@@ -37,12 +37,16 @@
     color: var(--color-text-main);
   }
 
-  p {
+  p, h3 {
     color: var(--color-text-main);
     font-family: "parabolica-text", sans-serif;
     font-style: normal;
     font-size: 12px;
     font-weight: 400;
+  } 
+
+  h3 {
+    color: var(--color-text-grey);
   }
 
   button  {

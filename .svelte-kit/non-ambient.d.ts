@@ -27,16 +27,20 @@ export {};
 
 declare module "$app/types" {
 	export interface AppTypes {
-		RouteId(): "/" | "/about" | "/submit";
+		RouteId(): "/" | "/about" | "/api" | "/api/captcha" | "/api/captcha/start" | "/api/captcha/verify" | "/submit";
 		RouteParams(): {
 			
 		};
 		LayoutParams(): {
 			"/": Record<string, never>;
 			"/about": Record<string, never>;
+			"/api": Record<string, never>;
+			"/api/captcha": Record<string, never>;
+			"/api/captcha/start": Record<string, never>;
+			"/api/captcha/verify": Record<string, never>;
 			"/submit": Record<string, never>
 		};
-		Pathname(): "/" | "/about" | "/about/" | "/submit" | "/submit/";
+		Pathname(): "/" | "/about" | "/about/" | "/api" | "/api/" | "/api/captcha" | "/api/captcha/" | "/api/captcha/start" | "/api/captcha/start/" | "/api/captcha/verify" | "/api/captcha/verify/" | "/submit" | "/submit/";
 		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes['Pathname']>}`;
 		Asset(): "/gallery.txt" | "/p5/.DS_Store" | "/p5/assets/.DS_Store" | "/p5/assets/after_valid.png" | "/p5/assets/before_valid.png" | "/p5/assets/glasses.png" | "/p5/assets/loading.png" | "/p5/assets/mike_captcha.png" | "/p5/assets/reload.png" | "/p5/mySketch.js" | string & {};
 	}
