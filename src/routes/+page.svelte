@@ -7,6 +7,7 @@
     let p5Container: HTMLDivElement;
     let loadingSpan: HTMLSpanElement;
     let captchaWrapper: HTMLDivElement;
+    let captchaCaption: HTMLParagraphElement;
     import gsap from 'gsap';
     import ScrollToPlugin from 'gsap/ScrollToPlugin';
 
@@ -64,6 +65,16 @@
         // Set the container ID to match the selected challenge
         if (p5Container) {
             p5Container.id = selectedChallenge.containerId;
+        }
+
+        // Show caption based on challenge
+        if (captchaCaption) {
+            captchaCaption.style.display = 'block';
+            if (selectedChallenge.containerId === 'p5-grid') {
+                captchaCaption.innerHTML = 'Select all squares with <b>Kapital Twill 1st Jacket</b>. Press <b>Enter</b> to submit.';
+            } else {
+                captchaCaption.innerHTML = 'Slide to complete the puzzle';
+            }
         }
 
         // Load challenge script first, then p5.js
@@ -152,6 +163,7 @@
 <div class="captcha-wrapper" bind:this={captchaWrapper}>
     <p class="captcha-label">Mike Captcha</p>
     <div id="p5-challenge" class="p5-container" bind:this={p5Container}></div>
+    <p class="captcha-caption" bind:this={captchaCaption}>Select all squares with a grail</p>
 </div>
 <div id="loading-span" bind:this={loadingSpan}>
     <h3>Loading<span class="loading-dot">.</span><span class="loading-dot">.</span><span class="loading-dot">.</span></h3>

@@ -29,14 +29,13 @@ let movementDeltas = [];
 // === YOUR CUSTOM STATE ===
 let solution;
 let selected;
-let base_img
-
-let reload_img;
+let base_img;
+let after_img;
 
 // === PRELOAD ASSETS ===
 function preload() {
   base_img = loadImage('/p5/assets/base.png');
-  reload_img = loadImage('/p5/assets/reload.png');
+  after_img = loadImage('/p5/assets/grid_solved.png');
 }
 
 // === SETUP ===
@@ -60,11 +59,10 @@ function setup() {
 function draw() {
   background(239);
   push();
+  drawCaptchaChallenge();
   if (isValid) {
     drawSuccessState();
-  } else {
-    drawCaptchaChallenge();
-  }
+  } 
 }
 
 // === DRAW FUNCTIONS ===
@@ -89,15 +87,14 @@ function drawSelectedCells() {
   }
 }
 function drawSuccessState() {
-  // Draw success state with fade-in
   let t = millis() - validationStartTime;
-  let opacity = map(t, 0, 500, 0, 255);
+  let opacity = map(t, 0, 700, 0, 255);
   opacity = constrain(opacity, 0, 255);
 
-  fill(50, 200, 100, opacity);
-  textAlign(CENTER, CENTER);
-  textSize(32);
-  text('Success!', width / 2, height / 2);
+  push();
+  tint(255, opacity);
+  image(after_img, MARGIN, MARGIN, FRAME_WIDTH, FRAME_HEIGHT);
+  pop();
 }
 
 function checkValid() {

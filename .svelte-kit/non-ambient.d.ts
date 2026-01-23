@@ -42,6 +42,6 @@ declare module "$app/types" {
 		};
 		Pathname(): "/" | "/about" | "/about/" | "/api" | "/api/" | "/api/captcha" | "/api/captcha/" | "/api/captcha/start" | "/api/captcha/start/" | "/api/captcha/verify" | "/api/captcha/verify/" | "/submit" | "/submit/";
 		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes['Pathname']>}`;
-		Asset(): "/gallery.txt" | "/p5/.DS_Store" | "/p5/assets/.DS_Store" | "/p5/assets/after_valid.png" | "/p5/assets/base.png" | "/p5/assets/before_valid.png" | "/p5/assets/glasses.png" | "/p5/assets/loading.png" | "/p5/assets/mike_captcha.png" | "/p5/assets/reload.png" | "/p5/captchaTemplate.js" | "/p5/glasses.js" | "/p5/grid.js" | string & {};
+		Asset(): "/gallery.txt" | "/p5/.DS_Store" | "/p5/assets/.DS_Store" | "/p5/assets/after_valid.png" | "/p5/assets/base.png" | "/p5/assets/before_valid.png" | "/p5/assets/glasses.png" | "/p5/assets/grid_solved.png" | "/p5/assets/loading.png" | "/p5/assets/reload.png" | "/p5/captchaTemplate.js" | "/p5/glasses.js" | "/p5/grid.js" | string & {};
 	}
 }
