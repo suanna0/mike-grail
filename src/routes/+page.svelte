@@ -55,6 +55,14 @@
     onMount(() => {
         const isMobile = window.innerWidth <= 850;
 
+        // Check if already verified this session
+        const alreadyVerified = sessionStorage.getItem('captchaVerified') === 'true';
+        if (alreadyVerified) {
+            if (captchaWrapper) captchaWrapper.style.display = 'none';
+            if (loadingSpan) loadingSpan.style.display = 'none';
+            return;
+        }
+
         // Randomly select challenge script
         const challenges = [
             { script: '/p5/grid.js', containerId: 'p5-grid' },
@@ -67,12 +75,20 @@
             p5Container.id = selectedChallenge.containerId;
         }
 
-        // Show caption based on challenge
+        // Listen for p5ChallengeLoaded to get caption from p5 file
+        const handleChallengeLoaded = (event: Event) => {
+            const customEvent = event as CustomEvent;
+            if (captchaCaption && selectedChallenge.containerId === 'p5-grid') {
+                captchaCaption.style.display = 'block';
+                captchaCaption.innerHTML = `Select all squares with <b>${customEvent.detail.caption}</b>. Press <b>Enter</b> to submit.`;
+            }
+        };
+        window.addEventListener('p5ChallengeLoaded', handleChallengeLoaded);
+
+        // Show caption based on challenge (fallback for non-grid challenges)
         if (captchaCaption) {
             captchaCaption.style.display = 'block';
-            if (selectedChallenge.containerId === 'p5-grid') {
-                captchaCaption.innerHTML = 'Select all squares with <b>Kapital Twill 1st Jacket</b>. Press <b>Enter</b> to submit.';
-            } else {
+            if (selectedChallenge.containerId !== 'p5-grid') {
                 captchaCaption.innerHTML = 'Slide to complete the puzzle';
             }
         }
@@ -92,6 +108,7 @@
             setTimeout(() => {
                 if (p5Container) {
                     p5Container.style.visibility = 'hidden';
+                    captchaWrapper.style.visibility = 'hidden';
                 }
                 loadingSpan.style.visibility = 'visible';
                 gsap.from(loadingSpan.querySelector('h3'), {
@@ -106,6 +123,7 @@
             if (p5Container) {
                 p5Container.style.visibility = 'hidden';
                 loadingSpan.style.visibility = 'hidden';
+                captchaWrapper.style.visibility = 'hidden';
             }
             window.scrollTo(0, 0);
             gsap.to(window, {
@@ -129,6 +147,7 @@
             const customEvent = event as CustomEvent;
             const verified = await verifyCaptcha(customEvent.detail);
             if (verified) {
+                sessionStorage.setItem('captchaVerified', 'true');
                 loadingAnimation();
                 setTimeout(() => {
                     window.scrollTo(0, 0);
@@ -151,6 +170,7 @@
         return () => {
             clearInterval(checkP5Ready);
             window.removeEventListener('p5Valid', handleP5Valid);
+            window.removeEventListener('p5ChallengeLoaded', handleChallengeLoaded);
         };
     });
 
@@ -230,5 +250,11 @@
         30% {
             transform: translateY(-5px);
         }
+    }
+
+    .captcha-caption {
+        max-width: 506px;
+        text-align: center;
+        word-wrap: break-word;
     }
 </style>
