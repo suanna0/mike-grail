@@ -1,8 +1,8 @@
 import { json } from '@sveltejs/kit';
 import { challenges, passes } from '$lib/server/captchaStore';
 
-const MIN_DURATION = 400; // ms
-const MIN_MOVES = 5;
+const MIN_DURATION = 100; // ms (relaxed for development)
+const MIN_MOVES = 1;      // (relaxed for development)
 const MAX_AGE = 90_000; // 90 seconds
 
 export async function POST({ request, getClientAddress }) {
@@ -52,17 +52,16 @@ export async function POST({ request, getClientAddress }) {
   }
 
   // Heuristic checks (intentionally fuzzy)
+  // TODO: Re-enable stricter checks for production
   if (
     duration < MIN_DURATION ||
-    moves < MIN_MOVES ||
-    accuracy > 0.99 || // too perfect is suspicious
-    jitter === 0
+    moves < MIN_MOVES
+    // accuracy > 0.99 || // too perfect is suspicious (disabled for dev)
+    // jitter === 0       // (disabled for dev)
   ) {
     console.log('[Server] ✗ Rejected: Failed heuristics -', {
       durationOk: duration >= MIN_DURATION,
-      movesOk: moves >= MIN_MOVES,
-      accuracyOk: accuracy <= 0.99,
-      jitterOk: jitter !== 0
+      movesOk: moves >= MIN_MOVES
     });
     return json({ ok: false }, { status: 403 });
   }

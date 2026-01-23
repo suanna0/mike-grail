@@ -6,6 +6,7 @@
     let gallerySpan: HTMLSpanElement;
     let p5Container: HTMLDivElement;
     let loadingSpan: HTMLSpanElement;
+    let captchaWrapper: HTMLDivElement;
     import gsap from 'gsap';
     import ScrollToPlugin from 'gsap/ScrollToPlugin';
 
@@ -53,6 +54,29 @@
     onMount(() => {
         const isMobile = window.innerWidth <= 850;
 
+        // Randomly select challenge script
+        const challenges = [
+            { script: '/p5/grid.js', containerId: 'p5-grid' },
+            { script: '/p5/glasses.js', containerId: 'p5-glasses' }
+        ];
+        const selectedChallenge = challenges[Math.floor(Math.random() * challenges.length)];
+
+        // Set the container ID to match the selected challenge
+        if (p5Container) {
+            p5Container.id = selectedChallenge.containerId;
+        }
+
+        // Load challenge script first, then p5.js
+        // p5 needs to find setup() and draw() when it initializes
+        const challengeScript = document.createElement('script');
+        challengeScript.src = selectedChallenge.script;
+        challengeScript.onload = () => {
+            const p5Script = document.createElement('script');
+            p5Script.src = 'https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js';
+            document.head.appendChild(p5Script);
+        };
+        document.head.appendChild(challengeScript);
+
         function loadingAnimation() {
             setTimeout(() => {
                 if (p5Container) {
@@ -98,6 +122,7 @@
                 loadingAnimation();
                 setTimeout(() => {
                     loadingSpan.style.visibility = 'hidden';
+                    captchaWrapper.style.visibility = 'hidden';
                     gsap.to(window, {
                         delay: 1.5,
                         duration: 1.0,
@@ -106,7 +131,6 @@
                     });
                 }, 6000);
             } else {
-                // Restart captcha on failure
                 startCaptcha();
             }
         };
@@ -122,12 +146,13 @@
 </script>
 <svelte:head>
     <title>Mike Grail</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
-    <script src="/p5/mySketch.js"></script>
 </svelte:head>
 
 
-<div id="p5-container" bind:this={p5Container}></div>
+<div class="captcha-wrapper" bind:this={captchaWrapper}>
+    <p class="captcha-label">Mike Captcha</p>
+    <div id="p5-challenge" class="p5-container" bind:this={p5Container}></div>
+</div>
 <div id="loading-span" bind:this={loadingSpan}>
     <h3>Loading<span class="loading-dot">.</span><span class="loading-dot">.</span><span class="loading-dot">.</span></h3>
 </div>
@@ -138,7 +163,8 @@
 </span>
 
 <style>
-    #p5-container {
+    .captcha-wrapper {
+        background-color: var(--color-bg);
         position: fixed;
         top: 0;
         left: 0;
@@ -146,6 +172,10 @@
         height: 100vh;
         z-index: 99990;
         pointer-events: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
 
     #loading-span {

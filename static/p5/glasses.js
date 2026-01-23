@@ -1,0 +1,222 @@
+// ============================================
+// P5.js Glasses Captcha
+// ============================================
+// Slide the glasses onto Mike's face
+// ============================================
+
+// === CONFIGURATION ===
+const CONTAINER_ID = 'p5-glasses';
+const FRAME_WIDTH = 666;
+const FRAME_HEIGHT = 383;
+const BTN_SIZE = 50;
+const MARGIN = 15;
+const ROUNDNESS = 8;
+const TARGET_WIDTH = 400;
+const START_ANGLE = -180;
+const END_ANGLE = 1080;
+const END_X = -42.5;
+const EPSILON = 10;
+
+// === STATE ===
+let isValid = false;
+let validationStartTime = 0;
+
+// Captcha metrics tracking
+let challengeId = null;
+let captchaStartTime = 0;
+let moveCount = 0;
+let lastMouseX = 0;
+let lastMouseY = 0;
+let movementDeltas = [];
+
+// === CUSTOM STATE ===
+let xPos;
+let sliderX;
+let before_img;
+let glasses_img;
+let solved_img;
+let reload_img;
+
+// === PRELOAD ASSETS ===
+function preload() {
+  before_img = loadImage('/p5/assets/before_valid.png');
+  glasses_img = loadImage('/p5/assets/glasses.png');
+  solved_img = loadImage('/p5/assets/after_valid.png');
+  reload_img = loadImage('/p5/assets/reload.png');
+}
+
+// === SETUP ===
+function setup() {
+  let canvas = createCanvas(windowWidth, FRAME_HEIGHT * 2);
+  canvas.parent(CONTAINER_ID);
+
+  // Initialize state
+  sliderX = width / 2 - FRAME_WIDTH / 2;
+  xPos = -FRAME_WIDTH / 2;
+  isValid = false;
+  validationStartTime = 0;
+  captchaStartTime = millis();
+  moveCount = 0;
+  movementDeltas = [];
+}
+
+// === MAIN DRAW LOOP ===
+function draw() {
+  background(239);
+
+  if (width <= 850) {
+    drawMobileState();
+    return;
+  }
+
+  drawCaptchaChallenge();
+
+  if (isValid) {
+    drawSuccessState();
+  }
+}
+
+// === DRAW FUNCTIONS ===
+function drawCaptchaChallenge() {
+  drawFrame();
+  drawSlider();
+  drawTarget();
+}
+
+function drawMobileState() {
+  background(239);
+  image(reload_img, width / 2 - FRAME_WIDTH / 2, height / 2 - FRAME_HEIGHT / 2, FRAME_WIDTH, FRAME_HEIGHT);
+}
+
+function drawSuccessState() {
+  let t = millis() - validationStartTime;
+  let opacity = map(t, 0, 700, 0, 255);
+  opacity = constrain(opacity, 0, 255);
+
+  push();
+  tint(255, opacity);
+  image(solved_img, width / 2 - FRAME_WIDTH / 2, height / 2 - FRAME_HEIGHT / 2, FRAME_WIDTH, FRAME_HEIGHT);
+  pop();
+}
+
+function drawFrame() {
+  if (!before_img) return;
+  push();
+  drawingContext.save();
+  drawingContext.beginPath();
+  drawingContext.roundRect(width / 2 - FRAME_WIDTH / 2, height / 2 - FRAME_HEIGHT / 2, FRAME_WIDTH, FRAME_HEIGHT, ROUNDNESS);
+  drawingContext.clip();
+  image(before_img, width / 2 - FRAME_WIDTH / 2, height / 2 - FRAME_HEIGHT / 2, FRAME_WIDTH, FRAME_HEIGHT);
+  drawingContext.restore();
+  pop();
+}
+
+function drawSlider() {
+  noStroke();
+  fill(140);
+  drawingContext.save();
+  drawingContext.filter = 'blur(5px)';
+  rect(sliderX, height / 2 + FRAME_HEIGHT / 2 + MARGIN, BTN_SIZE, BTN_SIZE, ROUNDNESS);
+  drawingContext.restore();
+  fill(239);
+  rect(sliderX, height / 2 + FRAME_HEIGHT / 2 + MARGIN, BTN_SIZE, BTN_SIZE, ROUNDNESS);
+}
+
+function drawTarget() {
+  xPos = map(sliderX, width / 2 - FRAME_WIDTH / 2, width / 2 + FRAME_WIDTH / 2 - BTN_SIZE, -TARGET_WIDTH / 2, TARGET_WIDTH / 2);
+  let [x, y, r] = getCoords(xPos);
+  push();
+  translate(x, y);
+  rotate(radians(r));
+  translate(-208 / 2, -116 / 2);
+  image(glasses_img, 0, 0, 208, 116);
+  pop();
+}
+
+// === HELPER FUNCTIONS ===
+function getCoords(x) {
+  // Solution is at END_X
+  return [
+    x + width / 2,
+    (height / 2 - 100 * sin(map(x, -TARGET_WIDTH / 2, TARGET_WIDTH / 2, 0, 3))) -
+      10 -
+      (height / 2 - 100 * sin(map(END_X, -TARGET_WIDTH / 2, TARGET_WIDTH / 2, 0, 3)) - 10 + (49 - height / 2)),
+    map(x, -TARGET_WIDTH / 2, TARGET_WIDTH / 2, START_ANGLE, END_ANGLE) -
+      map(END_X, -TARGET_WIDTH / 2, TARGET_WIDTH / 2, START_ANGLE, END_ANGLE)
+  ];
+}
+
+// === VALIDATION ===
+function checkValid() {
+  return END_X - EPSILON < xPos && xPos < END_X + EPSILON;
+}
+
+function onValidated() {
+  isValid = true;
+  validationStartTime = millis();
+
+  // Calculate captcha metrics
+  const duration = millis() - captchaStartTime;
+  const accuracy = 1 - Math.abs(xPos - END_X) / EPSILON;
+
+  // Calculate jitter (variance in movement)
+  let jitter = 0;
+  if (movementDeltas.length > 1) {
+    const avgDelta = movementDeltas.reduce((a, b) => a + b, 0) / movementDeltas.length;
+    const variance = movementDeltas.reduce((sum, d) => sum + Math.pow(d - avgDelta, 2), 0) / movementDeltas.length;
+    jitter = Math.sqrt(variance);
+  }
+
+  const metrics = {
+    challengeId: challengeId,
+    duration: duration,
+    moves: moveCount,
+    jitter: jitter,
+    accuracy: accuracy
+  };
+
+  console.log('[p5 Captcha] Solved! Dispatching p5Valid event with metrics:', metrics);
+  window.dispatchEvent(new CustomEvent('p5Valid', { detail: metrics }));
+}
+
+// === INPUT HANDLERS ===
+function mouseDragged() {
+  if (isValid) return;
+  sliderX = min(max(width / 2 - FRAME_WIDTH / 2, mouseX - BTN_SIZE / 2), width / 2 + FRAME_WIDTH / 2 - BTN_SIZE);
+
+  // Track movement metrics
+  moveCount++;
+  if (lastMouseX !== 0 || lastMouseY !== 0) {
+    let deltaX = mouseX - lastMouseX;
+    let deltaY = mouseY - lastMouseY;
+    movementDeltas.push(Math.sqrt(deltaX * deltaX + deltaY * deltaY));
+  }
+  lastMouseX = mouseX;
+  lastMouseY = mouseY;
+}
+
+function mouseReleased() {
+  if (isValid) return;
+  if (checkValid()) {
+    onValidated();
+  }
+}
+
+// === WINDOW RESIZE ===
+function windowResized() {
+  let sliderProgress = map(sliderX, width / 2 - FRAME_WIDTH / 2, width / 2 + FRAME_WIDTH / 2 - BTN_SIZE, 0, 1);
+  resizeCanvas(windowWidth, windowHeight);
+  sliderX = map(sliderProgress, 0, 1, width / 2 - FRAME_WIDTH / 2, width / 2 + FRAME_WIDTH / 2 - BTN_SIZE);
+}
+
+// === CHALLENGE ID (called from Svelte) ===
+function setCaptchaChallengeId(id) {
+  console.log('[p5 Captcha] Received challengeId:', id);
+  challengeId = id;
+  captchaStartTime = millis();
+  moveCount = 0;
+  movementDeltas = [];
+}
+
+// Expose to window for Svelte access
+window.setCaptchaChallengeId = setCaptchaChallengeId;

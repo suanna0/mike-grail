@@ -4,8 +4,8 @@
   
     const navItems = [
       { label: 'Mike Grail', path: '/' },
-      { label: 'About', path: '/about' },
-      { label: 'Submit', path: '/submit' }
+      { label: 'About', path: '/about' }
+      // { label: 'Submit', path: '/submit' }
     ];
   
     function navigate(path: string) {
