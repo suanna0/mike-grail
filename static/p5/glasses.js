@@ -10,6 +10,7 @@ const FRAME_WIDTH = 666;
 const FRAME_HEIGHT = 383;
 const BTN_SIZE = 50;
 const MARGIN = 15;
+const PADDING = 10;
 const ROUNDNESS = 8;
 const TARGET_WIDTH = 400;
 const START_ANGLE = -180;
@@ -46,12 +47,15 @@ function preload() {
 }
 
 // === SETUP ===
+const CANVAS_WIDTH = FRAME_WIDTH + PADDING * 2;
+const CANVAS_HEIGHT = FRAME_HEIGHT + MARGIN + BTN_SIZE + PADDING * 2;
+
 function setup() {
-  let canvas = createCanvas(windowWidth, FRAME_HEIGHT * 2);
+  let canvas = createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT);
   canvas.parent(CONTAINER_ID);
 
   // Initialize state
-  sliderX = width / 2 - FRAME_WIDTH / 2;
+  sliderX = PADDING;
   xPos = -FRAME_WIDTH / 2;
   isValid = false;
   validationStartTime = 0;
@@ -64,7 +68,7 @@ function setup() {
 function draw() {
   background(239);
 
-  if (width <= 850) {
+  if (width <= 500) {
     drawMobileState();
     return;
   }
@@ -85,7 +89,7 @@ function drawCaptchaChallenge() {
 
 function drawMobileState() {
   background(239);
-  image(reload_img, width / 2 - FRAME_WIDTH / 2, height / 2 - FRAME_HEIGHT / 2, FRAME_WIDTH, FRAME_HEIGHT);
+  image(reload_img, PADDING, PADDING, FRAME_WIDTH, FRAME_HEIGHT);
 }
 
 function drawSuccessState() {
@@ -95,7 +99,7 @@ function drawSuccessState() {
 
   push();
   tint(255, opacity);
-  image(solved_img, width / 2 - FRAME_WIDTH / 2, height / 2 - FRAME_HEIGHT / 2, FRAME_WIDTH, FRAME_HEIGHT);
+  image(solved_img, PADDING, PADDING, FRAME_WIDTH, FRAME_HEIGHT);
   pop();
 }
 
@@ -104,9 +108,9 @@ function drawFrame() {
   push();
   drawingContext.save();
   drawingContext.beginPath();
-  drawingContext.roundRect(width / 2 - FRAME_WIDTH / 2, height / 2 - FRAME_HEIGHT / 2, FRAME_WIDTH, FRAME_HEIGHT, ROUNDNESS);
+  drawingContext.roundRect(PADDING, PADDING, FRAME_WIDTH, FRAME_HEIGHT, ROUNDNESS);
   drawingContext.clip();
-  image(before_img, width / 2 - FRAME_WIDTH / 2, height / 2 - FRAME_HEIGHT / 2, FRAME_WIDTH, FRAME_HEIGHT);
+  image(before_img, PADDING, PADDING, FRAME_WIDTH, FRAME_HEIGHT);
   drawingContext.restore();
   pop();
 }
@@ -116,14 +120,14 @@ function drawSlider() {
   fill(140);
   drawingContext.save();
   drawingContext.filter = 'blur(5px)';
-  rect(sliderX, height / 2 + FRAME_HEIGHT / 2 + MARGIN, BTN_SIZE, BTN_SIZE, ROUNDNESS);
+  rect(sliderX, PADDING + FRAME_HEIGHT + MARGIN, BTN_SIZE, BTN_SIZE, ROUNDNESS);
   drawingContext.restore();
   fill(239);
-  rect(sliderX, height / 2 + FRAME_HEIGHT / 2 + MARGIN, BTN_SIZE, BTN_SIZE, ROUNDNESS);
+  rect(sliderX, PADDING + FRAME_HEIGHT + MARGIN, BTN_SIZE, BTN_SIZE, ROUNDNESS);
 }
 
 function drawTarget() {
-  xPos = map(sliderX, width / 2 - FRAME_WIDTH / 2, width / 2 + FRAME_WIDTH / 2 - BTN_SIZE, -TARGET_WIDTH / 2, TARGET_WIDTH / 2);
+  xPos = map(sliderX, PADDING, PADDING + FRAME_WIDTH - BTN_SIZE, -TARGET_WIDTH / 2, TARGET_WIDTH / 2);
   let [x, y, r] = getCoords(xPos);
   push();
   translate(x, y);
@@ -136,11 +140,12 @@ function drawTarget() {
 // === HELPER FUNCTIONS ===
 function getCoords(x) {
   // Solution is at END_X
+  const centerY = FRAME_HEIGHT / 2;
   return [
-    x + width / 2,
-    (height / 2 - 100 * sin(map(x, -TARGET_WIDTH / 2, TARGET_WIDTH / 2, 0, 3))) -
+    x + PADDING + FRAME_WIDTH / 2,
+    PADDING + (centerY - 100 * sin(map(x, -TARGET_WIDTH / 2, TARGET_WIDTH / 2, 0, 3))) -
       10 -
-      (height / 2 - 100 * sin(map(END_X, -TARGET_WIDTH / 2, TARGET_WIDTH / 2, 0, 3)) - 10 + (49 - height / 2)),
+      (centerY - 100 * sin(map(END_X, -TARGET_WIDTH / 2, TARGET_WIDTH / 2, 0, 3)) - 10 + (49 - centerY)),
     map(x, -TARGET_WIDTH / 2, TARGET_WIDTH / 2, START_ANGLE, END_ANGLE) -
       map(END_X, -TARGET_WIDTH / 2, TARGET_WIDTH / 2, START_ANGLE, END_ANGLE)
   ];
@@ -182,7 +187,7 @@ function onValidated() {
 // === INPUT HANDLERS ===
 function mouseDragged() {
   if (isValid) return;
-  sliderX = min(max(width / 2 - FRAME_WIDTH / 2, mouseX - BTN_SIZE / 2), width / 2 + FRAME_WIDTH / 2 - BTN_SIZE);
+  sliderX = min(max(PADDING, mouseX - BTN_SIZE / 2), PADDING + FRAME_WIDTH - BTN_SIZE);
 
   // Track movement metrics
   moveCount++;
@@ -200,13 +205,6 @@ function mouseReleased() {
   if (checkValid()) {
     onValidated();
   }
-}
-
-// === WINDOW RESIZE ===
-function windowResized() {
-  let sliderProgress = map(sliderX, width / 2 - FRAME_WIDTH / 2, width / 2 + FRAME_WIDTH / 2 - BTN_SIZE, 0, 1);
-  resizeCanvas(windowWidth, windowHeight);
-  sliderX = map(sliderProgress, 0, 1, width / 2 - FRAME_WIDTH / 2, width / 2 + FRAME_WIDTH / 2 - BTN_SIZE);
 }
 
 // === CHALLENGE ID (called from Svelte) ===

@@ -81,7 +81,6 @@
             setTimeout(() => {
                 if (p5Container) {
                     p5Container.style.visibility = 'hidden';
-                    window.scrollTo(0, 0);
                 }
                 loadingSpan.style.visibility = 'visible';
                 gsap.from(loadingSpan.querySelector('h3'), {
@@ -121,6 +120,7 @@
             if (verified) {
                 loadingAnimation();
                 setTimeout(() => {
+                    window.scrollTo(0, 0);
                     loadingSpan.style.visibility = 'hidden';
                     captchaWrapper.style.visibility = 'hidden';
                     gsap.to(window, {
