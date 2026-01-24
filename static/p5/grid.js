@@ -22,16 +22,20 @@ const CAPTCHA_CHALLENGES = [
     caption: 'Kapital Twill 1st Jacket',
     solution: [0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1],
     baseImage: '/p5/assets/kapital_jacket_base.png',
-    solvedImage: '/p5/assets/kapital_jacket_solved.png',
     submittedBy: 'admin'
   },
-  // Add more challenges here:
   {
     id: 'cdg_red',
     caption: 'COMME des GARCONS Homme Plus Red Panelled T-Shirt',
     solution: [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
     baseImage: '/p5/assets/cdg_red_base.png',
-    solvedImage: '/p5/assets/cdg_red_solved.png',
+    submittedBy: 'user123'
+  },
+  { 
+    id: 'taiga_jean',
+    caption: 'Taiga Takahashi Lot. 704 Denim Trousers C. 1920\'s - Raw Indigo',
+    solution: [0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0],
+    baseImage: '/p5/assets/taiga_jean_base.png',
     submittedBy: 'user123'
   },
 ];
@@ -55,6 +59,7 @@ let selected;
 let caption = '';
 let submittedBy = '';
 let base_img;
+let before_img;
 let after_img;
 
 // === PRELOAD ASSETS ===
@@ -62,7 +67,8 @@ function preload() {
   // Select a random challenge
   currentChallenge = CAPTCHA_CHALLENGES[Math.floor(Math.random() * CAPTCHA_CHALLENGES.length)];
   base_img = loadImage(currentChallenge.baseImage);
-  after_img = loadImage(currentChallenge.solvedImage);
+  before_img = loadImage('p5/assets/grid_overlay.png');
+  after_img = loadImage('p5/assets/grid_success.png');
 }
 
 // === SETUP ===
@@ -112,16 +118,17 @@ function drawCaptchaChallenge() {
 
 function drawCells() {
   image(base_img, MARGIN, MARGIN, FRAME_WIDTH, FRAME_HEIGHT);
+  image(before_img, MARGIN, MARGIN, FRAME_WIDTH, FRAME_HEIGHT);
 }
 
 function drawSelectedCells() {
   noStroke();
-  fill(255, 255, 255, 50);
+  fill(239, 230, 230, 50);
   for (let i = 0; i < 16; i++) {
     if (selected[i]) {
       let x = MARGIN + (i % 4) * (CELL_SIZE + CELL_DIST);
       let y = MARGIN + Math.floor(i / 4) * (CELL_SIZE + CELL_DIST);
-      rect(x, y, CELL_SIZE, CELL_SIZE);
+      rect(x, y, CELL_SIZE + 1, CELL_SIZE + 1);
     }
   }
 }
@@ -132,6 +139,7 @@ function drawSuccessState() {
 
   push();
   tint(255, opacity);
+  image(base_img, MARGIN, MARGIN, FRAME_WIDTH, FRAME_HEIGHT);
   image(after_img, MARGIN, MARGIN, FRAME_WIDTH, FRAME_HEIGHT);
   pop();
 }
@@ -150,7 +158,7 @@ function drawFrame() {
   drawingContext.beginPath();
   drawingContext.roundRect(width / 2 - FRAME_WIDTH / 2, height / 2 - FRAME_HEIGHT / 2, FRAME_WIDTH, FRAME_HEIGHT, ROUNDNESS);
   drawingContext.clip();
-  image(before_img, width / 2 - FRAME_WIDTH / 2, height / 2 - FRAME_HEIGHT / 2, FRAME_WIDTH, FRAME_HEIGHT);
+  image(base_img, width / 2 - FRAME_WIDTH / 2, height / 2 - FRAME_HEIGHT / 2, FRAME_WIDTH, FRAME_HEIGHT);
   drawingContext.restore();
   pop();
   return true;
