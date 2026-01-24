@@ -1,1 +1,0 @@
-import{b as u,A as o,H as _,h as t,B as g,C as p,D as i,E as l,F as d,f as E}from"./CyF6-Xog.js";function v(n,r){let s=null,f=t;var a;if(t){s=E;for(var e=g(document.head);e!==null&&(e.nodeType!==p||e.data!==n);)e=i(e);if(e===null)l(!1);else{var y=i(e);e.remove(),d(y)}}t||(a=document.head.appendChild(u()));try{o(()=>r(a),_)}finally{f&&(l(!0),d(s))}}export{v as h};
