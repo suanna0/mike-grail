@@ -122,7 +122,7 @@ function drawSlider() {
   drawingContext.filter = 'blur(5px)';
   rect(sliderX, PADDING + FRAME_HEIGHT + MARGIN, BTN_SIZE, BTN_SIZE, ROUNDNESS);
   drawingContext.restore();
-  fill(239);
+  fill(255);
   rect(sliderX, PADDING + FRAME_HEIGHT + MARGIN, BTN_SIZE, BTN_SIZE, ROUNDNESS);
 }
 

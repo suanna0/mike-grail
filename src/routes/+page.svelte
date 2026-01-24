@@ -183,7 +183,7 @@
 <div class="captcha-wrapper" bind:this={captchaWrapper}>
     <p class="captcha-label">Mike Captcha</p>
     <div id="p5-challenge" class="p5-container" bind:this={p5Container}></div>
-    <p class="captcha-caption" bind:this={captchaCaption}>Select all squares with a grail</p>
+    <p class="captcha-caption" bind:this={captchaCaption}>Please wait</p>
 </div>
 <div id="loading-span" bind:this={loadingSpan}>
     <h3>Loading<span class="loading-dot">.</span><span class="loading-dot">.</span><span class="loading-dot">.</span></h3>
