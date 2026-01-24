@@ -34,6 +34,7 @@ function Nav($$renderer, $$props) {
     const navItems = [
       { label: "Mike Grail", path: "/" },
       { label: "About", path: "/about" }
+      // { label: 'Submit', path: '/submit' }
     ];
     $$renderer2.push(`<nav class="svelte-1h32yp1"><div class="nav-inner svelte-1h32yp1"><!--[-->`);
     const each_array = ensure_array_like(navItems);

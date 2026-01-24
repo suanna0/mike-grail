@@ -9,6 +9,10 @@
       "_environment.js"
     ]
   },
+  "_captchaStore.js": {
+    "file": "chunks/captchaStore.js",
+    "name": "captchaStore"
+  },
   "_context.js": {
     "file": "chunks/context.js",
     "name": "context"
@@ -119,7 +123,7 @@
       "_state.svelte.js"
     ],
     "css": [
-      "_app/immutable/assets/_layout.BjzqKO9a.css"
+      "_app/immutable/assets/_layout.BYy1pIZz.css"
     ]
   },
   "src/routes/+page.svelte": {
@@ -132,7 +136,7 @@
       "_context.js"
     ],
     "css": [
-      "_app/immutable/assets/_page.Ba83oT1B.css"
+      "_app/immutable/assets/_page.D_iUkDn9.css"
     ]
   },
   "src/routes/about/+page.svelte": {
@@ -145,6 +149,36 @@
     ],
     "css": [
       "_app/immutable/assets/_page.m48tou8n.css"
+    ]
+  },
+  "src/routes/api/captcha/start/+server.js": {
+    "file": "entries/endpoints/api/captcha/start/_server.js",
+    "name": "entries/endpoints/api/captcha/start/_server",
+    "src": "src/routes/api/captcha/start/+server.js",
+    "isEntry": true,
+    "imports": [
+      "_captchaStore.js"
+    ]
+  },
+  "src/routes/api/captcha/verify/+server.js": {
+    "file": "entries/endpoints/api/captcha/verify/_server.js",
+    "name": "entries/endpoints/api/captcha/verify/_server",
+    "src": "src/routes/api/captcha/verify/+server.js",
+    "isEntry": true,
+    "imports": [
+      "_captchaStore.js"
+    ]
+  },
+  "src/routes/submit/+page.svelte": {
+    "file": "entries/pages/submit/_page.svelte.js",
+    "name": "entries/pages/submit/_page.svelte",
+    "src": "src/routes/submit/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.3X90ZJb4.css"
     ]
   }
 }

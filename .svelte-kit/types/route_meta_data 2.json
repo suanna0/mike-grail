@@ -1,0 +1,11 @@
+{
+	"/": [],
+	"/about": [],
+	"/api/captcha/start": [
+		"src/routes/api/captcha/start/+server.js"
+	],
+	"/api/captcha/verify": [
+		"src/routes/api/captcha/verify/+server.js"
+	],
+	"/submit": []
+}

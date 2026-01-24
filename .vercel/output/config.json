@@ -19,6 +19,18 @@
 			"dest": "/about"
 		},
 		{
+			"src": "^/api/captcha/start/?(?:/__data.json)?$",
+			"dest": "/api/captcha/start"
+		},
+		{
+			"src": "^/api/captcha/verify/?(?:/__data.json)?$",
+			"dest": "/api/captcha/verify"
+		},
+		{
+			"src": "^/submit/?(?:/__data.json)?$",
+			"dest": "/submit"
+		},
+		{
 			"src": "/.*",
 			"dest": "/![-]/catchall"
 		}

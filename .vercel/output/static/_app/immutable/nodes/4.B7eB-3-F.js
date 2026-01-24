@@ -1,0 +1,2 @@
+import{f as e,a as o}from"../chunks/n02RSbSe.js";import"../chunks/DA92oIqu.js";import{O as i,$ as r}from"../chunks/CyF6-Xog.js";import{h as m}from"../chunks/C_WKoGjP.js";var s=e(`<section class="svelte-mlgy3h"><p class="svelte-mlgy3h">TO DO: put in a fun gif i think. also make the form. <br/><br/> Want your grails to live in Mike Captcha? 
+        Submit them <a href="https://www.instagram.com/michael__ry_/">here</a>.</p></section>`);function f(t){var a=s();m("mlgy3h",h=>{i(()=>{r.title="Submit to Mike Captcha | Mike Grail"})}),o(t,a)}export{f as component};
