@@ -3,8 +3,8 @@
 </svelte:head>
 <section>
     <p>
-        TO DO: put in a fun gif i think. also make the form. 
-        <br><br>
+        <!-- TO DO: put in a fun gif i think. also make the form. 
+        <br><br> -->
         Want your grails to live in Mike Captcha? 
         Submit them <a href="https://www.instagram.com/michael__ry_/">here</a>.
     </p>

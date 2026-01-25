@@ -14,29 +14,27 @@ const CELL_SIZE = 122.5;
 const CELL_DIST = 3;
 const ROUNDNESS = 8;
 
-// === CAPTCHA CHALLENGES ===
-// Each challenge has: id, caption, solution, baseImage, solvedImage, submittedBy
 const CAPTCHA_CHALLENGES = [
   {
-    id: 'kapital_jacket',
+    id: '0',
     caption: 'Kapital Twill 1st Jacket',
     solution: [0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1],
     baseImage: '/p5/assets/kapital_jacket_base.png',
     submittedBy: 'admin'
   },
   {
-    id: 'cdg_red',
+    id: '1',
     caption: 'COMME des GARCONS Homme Plus Red Panelled T-Shirt',
     solution: [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
     baseImage: '/p5/assets/cdg_red_base.png',
-    submittedBy: 'user123'
+    submittedBy: 'admin'
   },
   { 
-    id: 'taiga_jean',
+    id: '2',
     caption: 'Taiga Takahashi Lot. 704 Denim Trousers C. 1920\'s - Raw Indigo',
     solution: [0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0],
     baseImage: '/p5/assets/taiga_jean_base.png',
-    submittedBy: 'user123'
+    submittedBy: 'admin'
   },
 ];
 
