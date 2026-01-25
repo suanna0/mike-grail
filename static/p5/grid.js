@@ -18,22 +18,71 @@ const CAPTCHA_CHALLENGES = [
   {
     id: '0',
     caption: 'Kapital Twill 1st Jacket',
-    solution: [0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1],
-    baseImage: '/p5/assets/kapital_jacket_base.png',
+    solution:  [0, 0, 0, 0, 
+                0, 1, 1, 1, 
+                0, 1, 1, 1, 
+                0, 1, 1, 1],
+    baseImage: '/p5/assets/0000.png',
     submittedBy: 'admin'
   },
   {
     id: '1',
     caption: 'COMME des GARCONS Homme Plus Red Panelled T-Shirt',
-    solution: [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
-    baseImage: '/p5/assets/cdg_red_base.png',
+    solution:  [0, 0, 0, 0, 
+                0, 0, 0, 1, 
+                0, 0, 0, 1, 
+                0, 0, 0, 0],
+    baseImage: '/p5/assets/0001.png',
     submittedBy: 'admin'
   },
   { 
     id: '2',
     caption: 'Taiga Takahashi Lot. 704 Denim Trousers C. 1920\'s - Raw Indigo',
-    solution: [0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0],
-    baseImage: '/p5/assets/taiga_jean_base.png',
+    solution:  [0, 0, 0, 0, 
+                0, 1, 1, 0, 
+                0, 1, 1, 0, 
+                0, 1, 1, 0],
+    baseImage: '/p5/assets/0002.png',
+    submittedBy: 'admin'
+  },
+  { 
+    id: '3',
+    caption: 'LTTT ASICS Training Pant - Orange',
+    solution:  [0, 0, 0, 0, 
+                0, 0, 1, 1, 
+                0, 0, 1, 1,
+                0, 0, 1, 1],
+    baseImage: '/p5/assets/0003.png',
+    submittedBy: 'admin'
+  },
+  { 
+    id: '4',
+    caption: 'COMME des GARCONS Homme Plus Red Panelled T-Shirt',
+    solution:  [0, 0, 0, 0, 
+                0, 1, 1, 0, 
+                0, 1, 1, 0,
+                0, 1, 1, 0],
+    baseImage: '/p5/assets/0004.png',
+    submittedBy: 'admin'
+  },
+  { 
+    id: '5',
+    caption: 'Kapital No. 6 Canvas Snufkin Bag - Kinari',
+    solution:  [0, 0, 1, 0, 
+                0, 0, 1, 0, 
+                0, 0, 1, 0,
+                0, 0, 1, 0],
+    baseImage: '/p5/assets/0005.png',
+    submittedBy: 'admin'
+  },
+  { 
+    id: '6',
+    caption: 'Kapital Kathmandu Patchwork Shirt',
+    solution:  [0, 0, 1, 1, 
+                0, 0, 1, 1, 
+                0, 0, 1, 1,
+                0, 0, 0, 0],
+    baseImage: '/p5/assets/0006.png',
     submittedBy: 'admin'
   },
 ];

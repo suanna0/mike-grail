@@ -68,7 +68,7 @@
             { script: '/p5/grid.js', containerId: 'p5-grid' },
             { script: '/p5/glasses.js', containerId: 'p5-glasses' }
         ];
-        const selectedChallenge = challenges[Math.floor(Math.random() * challenges.length)];
+        const selectedChallenge = Math.random() < 0.8 ? challenges[0] : challenges[1];
 
         // Set the container ID to match the selected challenge
         if (p5Container) {
