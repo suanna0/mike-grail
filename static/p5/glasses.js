@@ -216,5 +216,20 @@ function setCaptchaChallengeId(id) {
   movementDeltas = [];
 }
 
+// Reset captcha to initial state (called from Svelte on failure)
+function resetCaptcha() {
+  console.log('[p5 Captcha] Resetting captcha...');
+  sliderX = PADDING;
+  xPos = -FRAME_WIDTH / 2;
+  isValid = false;
+  validationStartTime = 0;
+  captchaStartTime = millis();
+  moveCount = 0;
+  movementDeltas = [];
+  lastMouseX = 0;
+  lastMouseY = 0;
+}
+
 // Expose to window for Svelte access
 window.setCaptchaChallengeId = setCaptchaChallengeId;
+window.resetCaptcha = resetCaptcha;

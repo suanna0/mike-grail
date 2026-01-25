@@ -161,6 +161,10 @@
                     });
                 }, 6000);
             } else {
+                // Reset the visual state and start a new challenge
+                if ((window as any).resetCaptcha) {
+                    (window as any).resetCaptcha();
+                }
                 startCaptcha();
             }
         };
