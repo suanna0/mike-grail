@@ -103,6 +103,10 @@ let movementDeltas = [];
 let currentChallenge = null;
 let solution;
 let selected;
+let selectedTimes; // Track when each cell was selected for fade-in effect
+let deselectedTimes; // Track when each cell was deselected for fade-out effect
+const CELL_FADE_DURATION = 200; // ms for fade animation
+const HOVER_OPACITY = 25; // Opacity for hover (less than selected's 50)
 let caption = '';
 let submittedBy = '';
 let base_img;
@@ -136,6 +140,8 @@ function setup() {
   submittedBy = currentChallenge.submittedBy;
   challengeId = currentChallenge.id;
   selected = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  selectedTimes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  deselectedTimes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
   // Dispatch event with challenge info for Svelte
   window.dispatchEvent(new CustomEvent('p5ChallengeLoaded', {
@@ -170,15 +176,40 @@ function drawCells() {
 
 function drawSelectedCells() {
   noStroke();
-  fill(239, 230, 230, 50);
+
+  // Get current hover cell
+  let hoveredCell = whichCell(mouseX, mouseY);
+  if (hoveredCell < 0 || hoveredCell >= 16) hoveredCell = -1;
+
   for (let i = 0; i < 16; i++) {
+    let x = MARGIN + (i % 4) * (CELL_SIZE + CELL_DIST);
+    let y = MARGIN + Math.floor(i / 4) * (CELL_SIZE + CELL_DIST);
+
     if (selected[i]) {
-      let x = MARGIN + (i % 4) * (CELL_SIZE + CELL_DIST);
-      let y = MARGIN + Math.floor(i / 4) * (CELL_SIZE + CELL_DIST);
+      // Fade in selected cells (from hover opacity to selected opacity)
+      let t = millis() - selectedTimes[i];
+      let opacity = map(t, 0, CELL_FADE_DURATION, HOVER_OPACITY, 50);
+      opacity = constrain(opacity, HOVER_OPACITY, 50);
+
+      fill(239, 230, 230, opacity);
+      rect(x, y, CELL_SIZE + 1, CELL_SIZE + 1);
+    } else if (deselectedTimes[i] > 0 && millis() - deselectedTimes[i] < CELL_FADE_DURATION) {
+      // Fade out deselected cells (to hover opacity if still hovered, otherwise to 0)
+      let t = millis() - deselectedTimes[i];
+      let targetOpacity = (i === hoveredCell) ? HOVER_OPACITY : 0;
+      let opacity = map(t, 0, CELL_FADE_DURATION, 50, targetOpacity);
+      opacity = constrain(opacity, targetOpacity, 50);
+
+      fill(239, 230, 230, opacity);
+      rect(x, y, CELL_SIZE + 1, CELL_SIZE + 1);
+    } else if (i === hoveredCell && !isValid) {
+      // Instant hover effect on unselected cells
+      fill(239, 230, 230, HOVER_OPACITY);
       rect(x, y, CELL_SIZE + 1, CELL_SIZE + 1);
     }
   }
 }
+
 function drawSuccessState() {
   let t = millis() - validationStartTime;
   let opacity = map(t, 0, 700, 0, 255);
@@ -253,8 +284,10 @@ function mousePressed() {
   if (cell >= 0 && cell < 16) {
     if (selected[cell] == 1) {
       selected[cell] = 0;
+      deselectedTimes[cell] = millis(); // Record deselection time for fade-out
     } else {
       selected[cell] = 1;
+      selectedTimes[cell] = millis(); // Record selection time for fade-in
     }
   }
   // Track metrics
@@ -297,6 +330,8 @@ function setCaptchaChallenge(id) {
   submittedBy = challenge.submittedBy;
   challengeId = challenge.id;
   selected = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  selectedTimes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  deselectedTimes = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
   isValid = false;
   captchaStartTime = millis();
   moveCount = 0;
@@ -304,7 +339,7 @@ function setCaptchaChallenge(id) {
 
   // Load new images
   base_img = loadImage(challenge.baseImage);
-  after_img = loadImage(challenge.solvedImage);
+  after_img = loadImage('p5/assets/grid_success.png');
 
   console.log('[p5 Captcha] Set challenge:', id);
   return true;
